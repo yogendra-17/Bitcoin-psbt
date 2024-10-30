@@ -6,36 +6,24 @@ import (
 
 func main() {
 
-	// fmt.Println("====multisig redeem script ===")
-	// mainMultisig()
 
-	// fmt.Println("==== MultiSig P2SH Address ====")
-	// mainP2SH()
+	// Step 1: Create the multisig locking transaction
+	fmt.Println("=== Step 1: Creating Multisig Locking Transaction ===")
+	multisigTx := createMultisigTx()
 
-	// // Step 1: Generate and display the disassembled locking script
-	// fmt.Println("==== Disassembled Locking Script ====")
-	// mainDisassemble()
+	// Step 2: Sign the multisig transaction by Alice and Bob
+	fmt.Println("\n=== Step 2: Signing the Multisig Transaction ===")
+	SignMultisigPSBT(multisigTx)
 
-	// // Step 2: Generate and display the unlocking script for spending the multisig UTXO
-	// fmt.Println("\n==== Unlocking Script ====")
-	// mainUnlocking()
+	// Step 3: Create the unlocking transaction to spend the multisig UTXO
+	fmt.Println("\n=== Step 3: Creating Unlocking Transaction ===")
+	multisigUTXO := multisigTx.TxHash().String() // Get the transaction ID of the multisig tx
+	unlockTx := createUnlockTx(multisigUTXO)
 
-	// fmt.Println("==== Signed MultiSig Transaction ====")
-	// signedTx, err := SpendMultiSig()
-	// if err != nil {
-	// 	fmt.Printf("Error signing multisig transaction: %v", err)
-	// }
-	// fmt.Println("Signed Transaction Hex:", signedTx)
+	// Print a summary of the generated transactions
+	fmt.Println("\n=== Transaction Summary ===")
+	fmt.Printf("Multisig Locking Transaction: %v\n", multisigTx)
+	fmt.Printf("Unlocking Transaction: %v\n", unlockTx)
 
-	fmt.Println("=== Step 1: Creating Multisig Locking PSBT ===")
-	multisigPsbt := CreateMultisigPSBT()
-	fmt.Printf("Multisig Locking PSBT: %v\n", multisigPsbt)
-
-	fmt.Println("\n=== Step 2: Signing the PSBT ===")
-	SignMultisigPSBT(multisigPsbt)
-
-	fmt.Println("\n=== Step 3: Creating Unlocking PSBT ===")
-	unlockPsbt := UnlockMultisigPSBT(multisigPsbt.TxHash().String())
-	fmt.Printf("Unlocking PSBT: %v\n", unlockPsbt)
 
 }

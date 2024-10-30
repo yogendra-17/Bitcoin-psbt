@@ -1,9 +1,8 @@
-// unlock_multisig_psbt.go
 package main
 
 import (
 	"fmt"
-
+	"log"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -11,30 +10,62 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
-// UnlockMultisigPSBT creates a PSBT for spending from the multisig UTXO
-func UnlockMultisigPSBT(multisigUTXOHash string) *wire.MsgTx {
-	// Address Z for fee (example testnet address)
-	addressZ, _ := btcutil.DecodeAddress("bcrt1qzefpec3w9f5jr743pxt3x8q0p5m9p9r85gryes", &chaincfg.RegressionNetParams)
-	aliceAddress, _ := btcutil.DecodeAddress("bcrt1qlx24qm04uskmhl80g0du8kd93dfcnp70fw23aa", &chaincfg.RegressionNetParams)
+// createUnlockTx builds a PSBT to unlock funds from a multisig UTXO.
+func createUnlockTx(multisigUTXO string) *wire.MsgTx {
+	// Placeholder addresses for fee recipient (Address Z) and Alice’s address
+	feeAddressStr := ""     // replace with actual Address Z (testnet format)
+	aliceAddressStr := ""    // replace with Alice’s actual testnet address
+	utxoValue := int64(99000) // placeholder UTXO value in satoshis
 
-	// PSBT with multisig UTXO as input
-	psbt := wire.NewMsgTx(wire.TxVersion)
-	utxoHash, _ := chainhash.NewHashFromStr(multisigUTXOHash)
-	psbt.AddTxIn(wire.NewTxIn(wire.NewOutPoint(utxoHash, 0), nil, nil)) // Replace with actual output index
+	// Check for required placeholders
+	if feeAddressStr == "" || aliceAddressStr == "" || multisigUTXO == "" {
+		log.Fatalf("Error: All placeholders (fee address, Alice's address, multisig UTXO hash) must be set.")
+	}
 
-	// 1. Calculate output values for Address Z and Alice
-	utxoValue := int64(99000) // Assume the multisig UTXO value
-	feeOutput := int64(utxoValue * 1 / 100) // 1% to Address Z
-	returnOutput := utxoValue - feeOutput - 1000 // Subtract 1% fee and estimated transaction fee
+	// Decode Address Z and Alice's address
+	feeAddress, err := btcutil.DecodeAddress(feeAddressStr, &chaincfg.RegressionNetParams)
+	if err != nil {
+		log.Fatalf("Failed to decode fee recipient address (Address Z): %v", err)
+	}
+	aliceAddress, err := btcutil.DecodeAddress(aliceAddressStr, &chaincfg.RegressionNetParams)
+	if err != nil {
+		log.Fatalf("Failed to decode Alice's address: %v", err)
+	}
 
-	// 2. Add output 1: 1% to Address Z
-	scriptAddrZ, _ := txscript.PayToAddrScript(addressZ)
-	psbt.AddTxOut(wire.NewTxOut(feeOutput, scriptAddrZ))
+	// Decode the multisig UTXO hash
+	utxoHash, err := chainhash.NewHashFromStr(multisigUTXO)
+	if err != nil {
+		log.Fatalf("Failed to decode multisig UTXO hash: %v", err)
+	}
 
-	// 3. Add output 2: Remaining to Alice
-	scriptAlice, _ := txscript.PayToAddrScript(aliceAddress)
-	psbt.AddTxOut(wire.NewTxOut(returnOutput, scriptAlice))
+	// Calculate output amounts
+	feeAmount := utxoValue * 1 / 100           // 1% to Address Z as fee
+	aliceAmount := utxoValue - feeAmount - 1000 // Alice's amount after subtracting fees
+
+	// Create a new transaction
+	tx := wire.NewMsgTx(wire.TxVersion)
+
+	// Add multisig UTXO as input (replace 0 with actual output index if needed)
+	tx.AddTxIn(wire.NewTxIn(wire.NewOutPoint(utxoHash, 0), nil, nil))
+	fmt.Println("Added multisig UTXO as input.")
+
+	// Add output 1: 1% fee to Address Z
+	feeScript, err := txscript.PayToAddrScript(feeAddress)
+	if err != nil {
+		log.Fatalf("Failed to create script for fee address: %v", err)
+	}
+	tx.AddTxOut(wire.NewTxOut(feeAmount, feeScript))
+	fmt.Printf("Added fee output to Address Z: %d satoshis\n", feeAmount)
+
+	// Add output 2: Remaining amount to Alice
+	aliceScript, err := txscript.PayToAddrScript(aliceAddress)
+	if err != nil {
+		log.Fatalf("Failed to create script for Alice's address: %v", err)
+	}
+	tx.AddTxOut(wire.NewTxOut(aliceAmount, aliceScript))
+	fmt.Printf("Added output to Alice: %d satoshis\n", aliceAmount)
 
 	fmt.Println("Generated PSBT for unlocking multisig funds.")
-	return psbt
+	return tx
 }
+
