@@ -18,7 +18,6 @@ Prerequisites:
 Install dependencies using:
 ```
 go get github.com/btcsuite/btcd
-go get github.com/btcsuite/btcutil
 
 ```
 Installation
