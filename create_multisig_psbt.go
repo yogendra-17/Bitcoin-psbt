@@ -14,15 +14,15 @@ import (
 // createMultisigTx builds a PSBT to lock funds into a 2-of-2 multisig address.
 func createMultisigTx() *wire.MsgTx {
 	// Placeholder public keys for Alice and Bob
-	alicePubKeyHex := "02a057a2d5dffe48b44f0c277977e2d7d5e0e0d83a54342639b7f19c495564fab2" // replace with Alice's public key (hex)
-	bobPubKeyHex := "03eeb6d8dc3249317557b13d301637f7fcd46fc2c8ead8776aa18b8d911b34a239"
+	alicePubKeyHex := "" // replace with Alice's public key (hex)
+	bobPubKeyHex := ""
     // replace with Bob's public key (hex)
 	
 	// Placeholder for Address Z (fee recipient)
-	feeAddressStr := "tb1q4943lwh4ey0z95qh7ywgkxllnapu8sjct9nwvm" // replace with Address Z in testnet format
+	feeAddressStr := "" // replace with Address Z in testnet format
 	
 	// Placeholder for UTXO hash (transaction ID for Alice's input)
-	utxoTxID := "404454671802b32f837a02ec84cafbe30480eb427e1e0164cb8869c90b5aeeca" // replace with actual UTXO transaction ID
+	utxoTxID := "" // replace with actual UTXO transaction ID
 
 	// Check for required values
 	if alicePubKeyHex == "" || bobPubKeyHex == "" {

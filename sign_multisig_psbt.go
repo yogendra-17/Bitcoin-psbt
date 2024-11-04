@@ -23,8 +23,8 @@ func hexToPrivateKey(hexKey string) (*btcec.PrivateKey, error) {
 
 // SignMultisigPSBT signs the PSBT with Alice's and Bob's private keys and returns the raw signed transaction.
 func SignMultisigPSBT(psbt *wire.MsgTx) string {
-	alicePrivKeyHex := "080e4ade97bbbe3548d7bcd570e93a4176fe12546b3efac01cf37ed693b1b508" // Replace with Alice's private key
-	bobPrivKeyHex := "95b13723fef26b9f1757598a86b14242cd2b7c7560b38e8dbfd17af8e7d95ddb"  // Replace with Bob's private key
+	alicePrivKeyHex := "" // Placeholder: Replace with Alice's private key
+	bobPrivKeyHex := ""  // Placeholder: Replace with Bob's private key
 
 	alicePrivKey, err := hexToPrivateKey(alicePrivKeyHex)
 	if err != nil {
