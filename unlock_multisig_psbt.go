@@ -13,9 +13,9 @@ import (
 // createUnlockTx builds a PSBT to unlock funds from a multisig UTXO.
 func createUnlockTx(multisigUTXO string) *wire.MsgTx {
 	// Placeholder addresses for fee recipient (Address Z) and Alice’s address
-	feeAddressStr := ""     // replace with actual Address Z (testnet format)
-	aliceAddressStr := ""    // replace with Alice’s actual testnet address
-	utxoValue := int64(99000) // placeholder UTXO value in satoshis
+	feeAddressStr := "tb1q4943lwh4ey0z95qh7ywgkxllnapu8sjct9nwvm"     // replace with actual Address Z (testnet format)
+	aliceAddressStr := "tb1q8syrtgcwptvanrejzpdvuezwdy3dq9hgqq90qg"    // replace with Alice’s actual testnet address
+	utxoValue := int64(1000) // placeholder UTXO value in satoshis
 
 	// Check for required placeholders
 	if feeAddressStr == "" || aliceAddressStr == "" || multisigUTXO == "" {
